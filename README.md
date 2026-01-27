@@ -10,9 +10,9 @@
 <h3>Proteja seu legado. Viaje no tempo.</h3>
 
 <p align="left">
-O <strong>backup SteamMRM</strong> é um plugin de segurança silencioso. Ele monitora sua sessão de jogo em tempo real. No momento em que você fecha um jogo, o protocolo <em>Recall</em> é ativado, criando um snapshot instantâneo dos seus dados mais valiosos.
+O <strong>backup SteamMRM</strong> é um ecossistema de segurança para sua Steam. Ele monitora sua sessão de jogo em tempo real e, através da integração nativa com o potente motor do <strong>Ludusavi</strong>, permite backups individuais cirúrgicos de cada save. No momento em que você fecha um jogo, o protocolo <em>Recall</em> é ativado, criando um snapshot automático.
 <br><br>
-Agora com o novo sistema de <strong>Restore</strong>, você pode reverter para qualquer ponto da história com apenas dois cliques. Nunca mais perca um save, uma configuração ou um status de plugin.
+Precisa de um backup manual ou quer gerenciar saves específicos? Use o novo botão de acesso rápido para abrir a interface do Ludusavi diretamente pela Steam. E com o sistema de <strong>Restore</strong>, você reverte para qualquer ponto da história com apenas dois cliques.
 </p>
 
 </div>
@@ -24,6 +24,7 @@ Agora com o novo sistema de <strong>Restore</strong>, você pode reverter para q
 | Recurso | Descrição |
 | :--- | :--- |
 | 🕵️ **Monitoramento Passivo** | Detecta automaticamente o encerramento de processos de jogos (AppID). Zero impacto na performance. |
+| 🎮 **Integração Ludusavi** | Motor de backup de saves integrado. Acesse a interface completa com um botão dedicado. |
 | 📦 **Backup Cirúrgico** | Salva apenas o que importa (userdata, stats, cache, configs), ignorando o "lixo" temporário. |
 | 🔄 **Time Travel (Restore)** | Restaure backups antigos instantaneamente através de uma interface visual integrada. |
 | 🔔 **Notificações Nativas** | Feedback visual discreto via Windows Toast ao concluir operações. |
