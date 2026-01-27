@@ -2,12 +2,6 @@
 
 # 🟣 backup SteamMRM 🟣 
 
-**Automação de Backup e Restauração Inteligente para Steam (Millennium)**
-
-[![Millennium](https://img.shields.io/badge/Millennium-Compatible-8b5cf6?style=for-the-badge&logo=steam)](https://steambrew.app/)
-[![Python](https://img.shields.io/badge/Backend-Python-ffe800?style=for-the-badge&logo=python&logoColor=black)](https://www.python.org/)
-[![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)]()
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)]()
 
 <p align="center">
   <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3BxdGp6Z3V4ZnV4ZnV4ZnV4ZnV4ZnV4ZnV4ZnV4ZnV4ZnV4eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LMcB8XjhG7ck/giphy.gif" width="100%" height="4" alt="divider">
@@ -151,3 +145,14 @@ irm https://raw.githubusercontent.com/BruxinCore/BackupSteamMRM/main/install.ps1
 <div align="center">
   <p>Desenvolvido com ❤️ por TheKillerMRM</p>
 </div>
+
+---
+
+## 🤝 Créditos e Inspirações
+
+Este projeto foi possível graças ao trabalho incrível de outros desenvolvedores. Um agradecimento especial a:
+
+- **[CalyRecall](https://github.com/BruxinCore/CalyRecall)** por [BruxinCore](https://github.com/BruxinCore) - Inspiração principal para o protocolo de backup e lógica de monitoramento.
+- **[Ludusavi](https://github.com/mtkennerly/ludusavi)** por [mtkennerly](https://github.com/mtkennerly) - Pelo motor de backup de saves e suporte a múltiplos jogos que serviu de base tecnológica para este plugin.
+
+*Obrigado por contribuírem para a comunidade open-source!*
