@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🟣 backup SteamMRM 🟣 
+# 🟣 Backup SteamMRM 🟣 
 
 
 <p align="center">
@@ -10,7 +10,7 @@
 <h3>Proteja seu legado. Viaje no tempo.</h3>
 
 <p align="left">
-O <strong>backup SteamMRM</strong> é um ecossistema de segurança para sua Steam. Ele monitora sua sessão de jogo em tempo real e, através da integração nativa com o potente motor do <strong>Ludusavi</strong>, permite backups individuais cirúrgicos de cada save. No momento em que você fecha um jogo, o protocolo <em>Recall</em> é ativado, criando um snapshot automático.
+O <strong>Backup SteamMRM</strong> é um ecossistema de segurança para sua Steam. Ele monitora sua sessão de jogo em tempo real e, através da integração nativa com o potente motor do <strong>Ludusavi</strong>, permite backups individuais cirúrgicos de cada save. No momento em que você fecha um jogo, o protocolo <em>Recall</em> é ativado, criando um snapshot automático.
 <br><br>
 Precisa de um backup manual ou quer gerenciar saves específicos? Use o novo botão de acesso rápido para abrir a interface do Ludusavi diretamente pela Steam. E com o sistema de <strong>Restore</strong>, você reverte para qualquer ponto da história com apenas dois cliques.
 </p>
@@ -37,13 +37,13 @@ Precisa de um backup manual ou quer gerenciar saves específicos? Use o novo bot
 
 ## 🕰️ Como usar o Restore
 
-O backup SteamMRM agora possui uma interface visual dedicada. Veja como é simples voltar no tempo:
+O Backup SteamMRM agora possui uma interface visual dedicada. Veja como é simples voltar no tempo:
 
 ### 1. O Botão de Acesso
 No canto inferior direito da sua Steam, procure pelo **Botão Roxo com Ícone de Relógio**. Ele é o seu portal para os backups.
 
 <div align="center">
-  <img src="https://i.imgur.com/gReSM17.png" alt="Botão backup SteamMRM" width="35%">
+  <img src="https://i.imgur.com/gReSM17.png" alt="Botão Backup SteamMRM" width="35%">
 </div>
 
 ### 2. Escolha o Ponto de Restauração
@@ -54,7 +54,7 @@ Ao clicar, uma lista com todos os seus backups organizados por data irá aparece
 </div>
 
 ### 3. Confirmação Visual
-Pronto! O backup SteamMRM fará a substituição cirúrgica dos arquivos e te avisará quando estiver tudo seguro.
+Pronto! O Backup SteamMRM fará a substituição cirúrgica dos arquivos e te avisará quando estiver tudo seguro.
 
 <div align="center">
   <img src="https://i.imgur.com/dD5YAs7.png" alt="Sucesso" width="50%">
@@ -64,7 +64,7 @@ Pronto! O backup SteamMRM fará a substituição cirúrgica dos arquivos e te av
 
 ## 🛡️ O Protocolo de Segurança (Backup Targets)
 
-O **backup SteamMRM** foi configurado para "congelar" o estado das seguintes pastas críticas:
+O **Backup SteamMRM** foi configurado para "congelar" o estado das seguintes pastas críticas:
 
 > **📂 1. Userdata (`/userdata`)**
 > * Contém todos os seus saves locais, configurações de controle e preferências de nuvem.
@@ -92,21 +92,21 @@ Instale em segundos sem precisar baixar arquivos manualmente.
 3. Copie e cole o comando abaixo e aperte `Enter`:
 
 ```powershell
-irm https://raw.githubusercontent.com/BruxinCore/backup SteamMRM/refs/heads/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/BruxinCore/Backup SteamMRM/refs/heads/main/install.ps1 | iex
 
 ```
 
 ### 🛠️ Método Manual
 
-1. Baixe a última versão do **backup SteamMRM**.
-2. Extraia a pasta `backup SteamMRM` para dentro do diretório de plugins:
+1. Baixe a última versão do **Backup SteamMRM**.
+2. Extraia a pasta `Backup SteamMRM` para dentro do diretório de plugins:
 
 ```bash
 C:\Program Files (x86)\Steam\plugins\
 
 ```
 
-*(Nota: Certifique-se de que a pasta se chama apenas `backup SteamMRM`)*
+*(Nota: Certifique-se de que a pasta se chama apenas `Backup SteamMRM`)*
 
 3. Reinicie a Steam.
 
