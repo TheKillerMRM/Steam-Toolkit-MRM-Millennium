@@ -1,6 +1,6 @@
 <div align="center">
 
-# ✅ Backup SteamMRM ✅ 
+# ✅ Backup SteamMRM v5 ✅ 
 
 
 <h3>Proteja seu legado. Viaje no tempo.</h3>
@@ -21,13 +21,18 @@ Precisa de um backup manual ou quer gerenciar saves específicos? Use o novo bot
 | :--- | :--- |
 | 🕵️ **Monitoramento Passivo** | Detecta automaticamente o encerramento de processos de jogos (AppID). Zero impacto na performance. |
 | 🎮 **Integração Ludusavi** | Motor de backup de saves integrado. Acesse a interface completa com um botão dedicado. |
-| 🎨 **Customização Visual** | Altere as cores da interface e o tema principal para combinar com seu setup. |
+| 🎨 **Customização Visual** | Altere as cores da interface e o tema principal para combinar com seu setup. Contraste dinâmico automático. |
 | 🌍 **Multi-idioma** | Suporte total para troca de idiomas (Português e Inglês). |
 | 🔄 **Time Travel (Restore)** | Restaure backups antigos instantaneamente através de uma interface visual integrada. |
 | 🧹 **Auto-Cleanup** | Mantenha o controle total: defina o número máximo de backups para gerenciar seu espaço. |
 | 📦 **Backup Cirúrgico** | Salva apenas o que importa (userdata, stats, cache, configs), ignorando o "lixo" temporário. |
 | 🔔 **Notificações Nativas** | Feedback visual discreto via Windows Toast ao concluir operações. |
 | 🗃️ **Histórico Organizado** | Cria pastas timestamped para você voltar no tempo quando quiser. |
+| 💾 **Backup Manual** | Crie backups a qualquer momento com um botão dedicado, sem esperar fechar um jogo. |
+| 📌 **Pin & Rename** | Fixe backups importantes para nunca serem apagados pelo Auto-Cleanup. Renomeie para fácil identificação. |
+| 📊 **Contador de Slots** | Barra de progresso visual mostrando quantos backups estão em uso vs. o limite configurado. |
+| 📂 **Pasta em Primeiro Plano** | Abra a pasta de backups diretamente pela interface — a janela aparece à frente da Steam. |
+| 🗂️ **Caminho Configurável** | Escolha onde guardar seus backups e mova os antigos para o novo local com um clique. |
 
 ---
 
@@ -123,20 +128,38 @@ Steam/
 
 ---
 
+## 📋 Changelog v5.0
+
+- 💾 **Backup Manual** — Botão "Backup Agora" para criar snapshots a qualquer momento
+- 📌 **Pin de Backups** — Fixe backups para protegê-los do Auto-Cleanup
+- ✏️ **Renomear Backups** — Dê nomes personalizados aos seus backups
+- 📊 **Contador de Slots** — Indicador visual de uso (ex: 3/5 usados) com barra de progresso
+- 📂 **Pasta em Primeiro Plano** — Abrir pasta de backups agora aparece à frente da Steam
+- 🎨 **Contraste Dinâmico** — Texto adapta-se automaticamente a temas claros ou escuros
+- 🗂️ **Caminho Configurável** — Escolha a pasta de destino dos backups com histórico de locais
+- ⚙️ **Ícone de Configurações** — Novo ícone de engrenagem no menu
+- 🔧 **Estabilidade** — Corrigido problema que fazia o menu do Millennium desaparecer
+
+---
+
 ## 🌎 README (English Summary)
 
 **Backup SteamMRM** is a passive security plugin for Steam (via Millennium) that monitors your game sessions. 
 
 ### Key Features:
 - **Auto Backup:** Triggers an instant snapshot of your save data and configs once a game is closed.
+- **Manual Backup:** Create snapshots anytime with a dedicated button.
 - **Visual Restore:** A dedicated UI within Steam to revert to any previous backup in two clicks.
+- **Pin & Rename:** Pin important backups to protect them from auto-cleanup. Rename for easy identification.
+- **Storage Counter:** Visual progress bar showing backup slots usage.
 - **Smart Targets:** Focuses on `userdata`, `stats`, `depotcache`, and plugin configurations.
 - **Auto-Cleanup:** Automatically manages storage space by keeping only your most recent backups.
+- **Configurable Path:** Choose where to store backups with path history.
 
 ### How to Install:
 Run the following in **PowerShell (Admin)**:
 ```powershell
-irm https://raw.githubusercontent.com/BruxinCore/BackupSteamMRM/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/TheKillerMRM/Backup-SteamMRM/main/install.ps1 | iex
 ```
 
 ---

@@ -21,14 +21,31 @@ def get_steam_path():
         return os.getcwd()
 
 STEAM_PATH = get_steam_path()
-MILLENNIUM_PATH = os.path.join(STEAM_PATH, "millennium") 
-BACKUP_ROOT = os.path.join(MILLENNIUM_PATH, "backups")
+SETTINGS_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "settings.json")
+MILLENNIUM_PATH = os.path.join(STEAM_PATH, "millennium")
 
-# Garantir que a pasta de backup existe para evitar erros de IO
-try:
-    os.makedirs(BACKUP_ROOT, exist_ok=True)
-except Exception as e:
-    print(f"[backup SteamMRM] Erro ao criar BACKUP_ROOT: {e}")
+def get_backup_root():
+    try:
+        import json
+        if os.path.exists(SETTINGS_FILE):
+            with open(SETTINGS_FILE, "r") as f:
+                settings = json.load(f)
+                custom_path = settings.get("backup_path")
+                if custom_path and os.path.exists(custom_path):
+                    return custom_path
+    except Exception as e:
+        print(f"[backup SteamMRM] Erro ao ler backup_path: {e}")
+    
+    # Default path
+    path = os.path.join(MILLENNIUM_PATH, "backups")
+    os.makedirs(path, exist_ok=True)
+    return path
+
+BACKUP_ROOT = get_backup_root()
+
+def reload_config():
+    global BACKUP_ROOT
+    BACKUP_ROOT = get_backup_root()
 
 BACKUP_TARGETS = [
     {"src": os.path.join(STEAM_PATH, "userdata"), "name": "userdata"},
@@ -38,7 +55,7 @@ BACKUP_TARGETS = [
 ]
 
 UI_THEME = {
-    "title": "Backup SteamMRM",
+    "title": "Backup SteamMRM v5",
     "bg": "#101014",
     "accent": "#8b5cf6"
 }

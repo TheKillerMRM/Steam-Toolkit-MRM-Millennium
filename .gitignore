@@ -1,6 +1,5 @@
 # Binaries & Large Files
 *.exe
-*.bin
 
 # User Settings
 settings.json
@@ -14,6 +13,15 @@ env/
 venv/
 ENV/
 
-# OS files
+# Build artifacts
+build/
+dist/
+*.spec
+
+# Debug logs
+*.log
+
+# OS & Temp files
 .DS_Store
 Thumbs.db
+Novo Documento de Texto*
