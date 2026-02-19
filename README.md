@@ -58,7 +58,7 @@ Ao clicar, uma lista com todos os seus backups organizados por data irá aparece
 Pronto! O Backup SteamMRM fará a substituição cirúrgica dos arquivos e te avisará quando estiver tudo seguro.
 
 <div align="center">
-  <img src="https://i.imgur.com/dD5YAs7.png" alt="Sucesso" width="50%">
+  <img src="https://i.imgur.com/Y2TW6a2.png" alt="Sucesso" width="50%">
 </div>
 
 ---
