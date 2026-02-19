@@ -130,6 +130,8 @@ Steam/
 
 ## 📋 Changelog v5.0
 
+- 🖌️ **Interface Redesenhada** — Novo visual moderno com glassmorphism, gradientes e animações suaves
+- 🎛️ **Menu de Configurações Melhorado** — Layout espaçado e organizado com temas lado a lado
 - 💾 **Backup Manual** — Botão "Backup Agora" para criar snapshots a qualquer momento
 - 📌 **Pin de Backups** — Fixe backups para protegê-los do Auto-Cleanup
 - ✏️ **Renomear Backups** — Dê nomes personalizados aos seus backups
@@ -137,7 +139,7 @@ Steam/
 - 📂 **Pasta em Primeiro Plano** — Abrir pasta de backups agora aparece à frente da Steam
 - 🎨 **Contraste Dinâmico** — Texto adapta-se automaticamente a temas claros ou escuros
 - 🗂️ **Caminho Configurável** — Escolha a pasta de destino dos backups com histórico de locais
-- ⚙️ **Ícone de Configurações** — Novo ícone de engrenagem no menu
+- ⚙️ **Barra de Ações Redesenhada** — Novos ícones (engrenagem, refresh, scanner, pasta, fechar) no header
 - 🔧 **Estabilidade** — Corrigido problema que fazia o menu do Millennium desaparecer
 
 ---
