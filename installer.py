@@ -51,7 +51,7 @@ def install():
     root.withdraw()
 
     print("============================================")
-    print("   Instalador Backup SteamMRM (Offline)")
+    print("   Instalador Backup SteamMRM v5 (Offline)")
     print("============================================\n")
 
     steam_path = get_steam_path_from_registry()
