@@ -10,7 +10,7 @@ import subprocess
 import threading
 import time
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, ttk
 
 # ─── CONSTANTS ───────────────────────────────────────────────────────
 APP_NAME = "Backup SteamMRM"
@@ -38,32 +38,45 @@ def resource_path(relative_path):
         base = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base, relative_path)
 
-def detect_steam_path():
-    """Try to auto-detect Steam path from registry."""
+def detect_steam_path_safe():
+    """Try to auto-detect Steam path safely."""
+    detected = ""
     try:
         key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam")
         path, _ = winreg.QueryValueEx(key, "SteamPath")
         winreg.CloseKey(key)
         path = path.replace("/", "\\")
         if os.path.exists(os.path.join(path, "steam.exe")):
-            return path
+            detected = path
     except Exception:
         pass
-    # Common fallback paths
-    for fallback in [
-        r"C:\Program Files (x86)\Steam",
-        r"C:\Program Files\Steam",
-        r"D:\Steam",
-        r"D:\Program Files (x86)\Steam",
-        r"E:\Steam",
-    ]:
-        if os.path.exists(os.path.join(fallback, "steam.exe")):
-            return fallback
-    return ""
+
+    if not detected:
+        # Common fallback paths
+        for fallback in [
+            r"C:\Program Files (x86)\Steam",
+            r"C:\Program Files\Steam",
+            r"D:\Steam",
+            r"D:\Program Files (x86)\Steam",
+            r"E:\Steam",
+        ]:
+            if os.path.exists(os.path.join(fallback, "steam.exe")):
+                detected = fallback
+                break
+    return detected
 
 def is_steam_running():
     try:
-        out = subprocess.check_output('tasklist /FI "IMAGENAME eq steam.exe"', shell=True).decode('latin-1')
+        # Prevent console window flashing
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        
+        out = subprocess.check_output(
+            'tasklist /FI "IMAGENAME eq steam.exe"', 
+            shell=True, 
+            startupinfo=startupinfo,
+            stderr=subprocess.DEVNULL
+        ).decode('latin-1', errors='ignore')
         return "steam.exe" in out.lower()
     except Exception:
         return False
@@ -78,44 +91,63 @@ class InstallerApp(tk.Tk):
         super().__init__()
         self.title(f"Instalar {APP_NAME} {VERSION}")
         self.configure(bg=BG)
-        self.resizable(False, False)
+        self.resizable(False, True)
 
         # Centre on screen
-        w, h = 560, 520
+        w, h = 580, 640
         x = (self.winfo_screenwidth()  - w) // 2
         y = (self.winfo_screenheight() - h) // 2
         self.geometry(f"{w}x{h}+{x}+{y}")
 
-        self._build_ui()
+        # Loading state
+        self.loading_label = tk.Label(self, text="A carregar...", font=("Segoe UI", 12), bg=BG, fg=FG_DIM)
+        self.loading_label.pack(expand=True)
+        
+        # Schedule UI build to allow window to show first
+        self.after(100, self._init_app)
 
-        # Try to auto-detect
-        detected = detect_steam_path()
-        if detected:
-            self.path_var.set(detected)
-            self._log(f"Steam detectada automaticamente: {detected}", FG_DIM)
+    def _init_app(self):
+        self.loading_label.destroy()
+        self._build_ui()
+        
+        # Async detection
+        threading.Thread(target=self._async_detect, daemon=True).start()
+
+    def _async_detect(self):
+        try:
+            detected = detect_steam_path_safe()
+            if detected:
+                # Thread-safe update
+                self.after(0, lambda: self._set_path(detected))
+        except:
+            pass
+
+    def _set_path(self, path):
+        self.path_var.set(path)
+        self._log(f"Steam detectada automaticamente: {path}", FG_DIM)
 
     # ── Build ────────────────────────────────────────────────────
     def _build_ui(self):
         # ── Header ────────────────────────────────────────────────
         header = tk.Frame(self, bg=BG)
-        header.pack(fill="x", padx=28, pady=(28, 0))
+        header.pack(fill="x", padx=32, pady=(32, 0))
 
-        tk.Label(header, text="💜", font=("Segoe UI Emoji", 28), bg=BG, fg=FG).pack(side="left")
+        tk.Label(header, text="💜", font=("Segoe UI Emoji", 32), bg=BG, fg=FG).pack(side="left")
         title_box = tk.Frame(header, bg=BG)
-        title_box.pack(side="left", padx=(12, 0))
-        tk.Label(title_box, text=APP_NAME, font=("Segoe UI", 18, "bold"), bg=BG, fg=FG).pack(anchor="w")
-        tk.Label(title_box, text=f"Instalador {VERSION}", font=("Segoe UI", 10), bg=BG, fg=FG_DIM).pack(anchor="w")
+        title_box.pack(side="left", padx=(16, 0))
+        tk.Label(title_box, text=APP_NAME, font=("Segoe UI", 20, "bold"), bg=BG, fg=FG).pack(anchor="w")
+        tk.Label(title_box, text=f"Instalador {VERSION}", font=("Segoe UI", 11), bg=BG, fg=FG_DIM).pack(anchor="w")
 
         # ── Separator ─────────────────────────────────────────────
-        tk.Frame(self, height=1, bg=BORDER).pack(fill="x", padx=28, pady=(18, 18))
+        tk.Frame(self, height=1, bg=BORDER).pack(fill="x", padx=32, pady=(24, 24))
 
         # ── Path section ──────────────────────────────────────────
         path_frame = tk.Frame(self, bg=BG)
-        path_frame.pack(fill="x", padx=28)
+        path_frame.pack(fill="x", padx=32)
 
-        tk.Label(path_frame, text="📁  Pasta da Steam", font=("Segoe UI", 11, "bold"), bg=BG, fg=FG).pack(anchor="w")
+        tk.Label(path_frame, text="📁  Pasta da Steam", font=("Segoe UI", 12, "bold"), bg=BG, fg=FG).pack(anchor="w")
         tk.Label(path_frame, text="Selecione a pasta raiz onde a Steam está instalada (onde fica o steam.exe).",
-                 font=("Segoe UI", 9), bg=BG, fg=FG_DIM, wraplength=500, justify="left").pack(anchor="w", pady=(2, 8))
+                 font=("Segoe UI", 9), bg=BG, fg=FG_DIM, wraplength=500, justify="left").pack(anchor="w", pady=(4, 10))
 
         input_row = tk.Frame(path_frame, bg=BG)
         input_row.pack(fill="x")
@@ -126,31 +158,34 @@ class InstallerApp(tk.Tk):
                                    insertbackground=FG, relief="flat",
                                    highlightthickness=1, highlightbackground=BORDER,
                                    highlightcolor=ACCENT)
-        self.path_entry.pack(side="left", fill="x", expand=True, ipady=7)
+        self.path_entry.pack(side="left", fill="x", expand=True, ipady=8, padx=(0, 10))
 
         browse_btn = tk.Button(input_row, text="Procurar...", font=("Segoe UI", 9, "bold"),
                                bg=BG_CARD, fg=FG, relief="flat", cursor="hand2",
                                activebackground=ACCENT, activeforeground="#fff",
-                               highlightthickness=0, padx=14, pady=6,
+                               highlightthickness=0, padx=16, pady=7,
                                command=self._browse)
-        browse_btn.pack(side="left", padx=(8, 0))
+        browse_btn.pack(side="left")
 
         # Validation hint
         self.hint_label = tk.Label(path_frame, text="", font=("Segoe UI", 9), bg=BG, fg=FG_DIM)
-        self.hint_label.pack(anchor="w", pady=(4, 0))
+        self.hint_label.pack(anchor="w", pady=(6, 0))
         self.path_var.trace_add("write", self._on_path_change)
 
         # ── Log area ──────────────────────────────────────────────
-        tk.Frame(self, height=1, bg=BORDER).pack(fill="x", padx=28, pady=(16, 12))
-        tk.Label(self, text="📋  Progresso", font=("Segoe UI", 11, "bold"), bg=BG, fg=FG).pack(anchor="w", padx=28)
+        tk.Frame(self, height=1, bg=BORDER).pack(fill="x", padx=32, pady=(20, 16))
+        
+        log_header = tk.Frame(self, bg=BG)
+        log_header.pack(fill="x", padx=32)
+        tk.Label(log_header, text="📋  Progresso", font=("Segoe UI", 12, "bold"), bg=BG, fg=FG).pack(side="left")
 
         log_frame = tk.Frame(self, bg=BG_CARD, highlightthickness=1,
                              highlightbackground=BORDER, highlightcolor=BORDER)
-        log_frame.pack(fill="both", expand=True, padx=28, pady=(6, 0))
+        log_frame.pack(fill="both", expand=True, padx=32, pady=(10, 0))
 
         self.log_text = tk.Text(log_frame, bg=BG_CARD, fg=FG_DIM, font=("Consolas", 9),
                                 relief="flat", state="disabled", wrap="word",
-                                highlightthickness=0, padx=10, pady=8)
+                                highlightthickness=0, padx=12, pady=10)
         self.log_text.pack(fill="both", expand=True)
         self.log_text.tag_config("accent", foreground=ACCENT)
         self.log_text.tag_config("success", foreground=SUCCESS)
@@ -161,27 +196,32 @@ class InstallerApp(tk.Tk):
         self._log("Pronto. Selecione a pasta da Steam e clique em Instalar.", FG_DIM)
 
         # ── Progress bar ──────────────────────────────────────────
-        self.progress_canvas = tk.Canvas(self, height=4, bg=BORDER, highlightthickness=0)
-        self.progress_canvas.pack(fill="x", padx=28, pady=(8, 0))
-        self.progress_rect = None
+        self.progress_var = tk.DoubleVar()
+        style = ttk.Style()
+        style.theme_use('default')
+        style.configure("Custom.Horizontal.TProgressbar", thickness=4, background=ACCENT, troughcolor=BORDER, borderwidth=0)
+        
+        self.progress = ttk.Progressbar(self, style="Custom.Horizontal.TProgressbar", 
+                                        variable=self.progress_var, maximum=100)
+        self.progress.pack(fill="x", padx=32, pady=(12, 0))
 
         # ── Bottom bar ────────────────────────────────────────────
         bottom = tk.Frame(self, bg=BG)
-        bottom.pack(fill="x", padx=28, pady=(12, 20))
+        bottom.pack(fill="x", padx=32, pady=(20, 32))
 
         self.install_btn = tk.Button(bottom, text="⬇  Instalar", font=("Segoe UI", 11, "bold"),
                                      bg=ACCENT, fg="#fff", relief="flat", cursor="hand2",
                                      activebackground=ACCENT_H, activeforeground="#fff",
-                                     highlightthickness=0, padx=28, pady=9,
+                                     highlightthickness=0, padx=32, pady=10,
                                      command=self._start_install)
         self.install_btn.pack(side="right")
 
         self.cancel_btn = tk.Button(bottom, text="Cancelar", font=("Segoe UI", 10),
                                     bg=BG_CARD, fg=FG_DIM, relief="flat", cursor="hand2",
                                     activebackground=BG_INPUT, activeforeground=FG,
-                                    highlightthickness=0, padx=18, pady=8,
+                                    highlightthickness=0, padx=20, pady=9,
                                     command=self.destroy)
-        self.cancel_btn.pack(side="right", padx=(0, 8))
+        self.cancel_btn.pack(side="right", padx=(0, 12))
 
     # ── Helpers ──────────────────────────────────────────────────
     def _browse(self):
@@ -210,13 +250,6 @@ class InstallerApp(tk.Tk):
         self.log_text.see("end")
         self.log_text.config(state="disabled")
 
-    def _set_progress(self, pct):
-        self.progress_canvas.delete("all")
-        w = self.progress_canvas.winfo_width()
-        if w <= 1: w = 504  # fallback
-        fill_w = int(w * (pct / 100))
-        self.progress_canvas.create_rectangle(0, 0, fill_w, 4, fill=ACCENT, outline="")
-
     def _set_buttons(self, enabled):
         state = "normal" if enabled else "disabled"
         self.install_btn.config(state=state)
@@ -238,86 +271,98 @@ class InstallerApp(tk.Tk):
     def _do_install(self, steam_path):
         try:
             plugin_dir = os.path.join(steam_path, "plugins", PLUGIN_FOLDER)
+            
+            # Helper to run updates on main thread
+            def safe_log(msg, color=None):
+                self.after(0, lambda: self._log(msg, color))
+            
+            def safe_progress(val):
+                self.after(0, lambda: self.progress_var.set(val))
 
             # Step 1: Stop Steam
-            self._log_step("Verificando Steam...", 5)
+            safe_log("\n▸ Verificando Steam...", ACCENT)
+            safe_progress(5)
+            
             if is_steam_running():
-                self._log_step("Fechando a Steam...", 10)
-                subprocess.run('taskkill /F /IM steam.exe', shell=True, capture_output=True)
-                time.sleep(2)
-                self._log("   Steam fechada.", FG_DIM)
+                safe_log("▸ Fechando a Steam...", ACCENT)
+                safe_progress(10)
+                
+                # Use subprocess run safely
+                subprocess.run('taskkill /F /IM steam.exe', shell=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                time.sleep(3)
+                safe_log("   Steam fechada.", FG_DIM)
             else:
-                self._log("   Steam não estava em execução.", FG_DIM)
+                safe_log("   Steam não estava em execução.", FG_DIM)
 
             # Step 2: Remove old version
-            self._log_step("Preparando pasta do plugin...", 20)
+            safe_log("\n▸ Preparando pasta do plugin...", ACCENT)
+            safe_progress(20)
+            
             if os.path.exists(plugin_dir):
                 shutil.rmtree(plugin_dir)
-                self._log("   Versão anterior removida.", FG_DIM)
+                safe_log("   Versão anterior removida.", FG_DIM)
             os.makedirs(plugin_dir, exist_ok=True)
 
             # Step 3: Copy assets
-            self._log_step("Copiando ficheiros...", 30)
+            safe_log("\n▸ Copiando ficheiros...", ACCENT)
+            safe_progress(30)
+            
             total = len(ASSETS)
             for i, asset in enumerate(ASSETS):
                 src = resource_path(asset)
                 dst = os.path.join(plugin_dir, asset)
+                
                 if not os.path.exists(src):
-                    self._log(f"   ⚠ '{asset}' não encontrado (ignorado).", ERROR)
+                    safe_log(f"   ⚠ '{asset}' não encontrado (ignorado).", ERROR)
                     continue
+                    
                 if os.path.isdir(src):
                     shutil.copytree(src, dst)
                 else:
                     shutil.copy2(src, dst)
+                    
                 pct = 30 + int(((i + 1) / total) * 50)
-                self._log(f"   ✓ {asset}", SUCCESS)
-                self._update_progress(pct)
+                safe_log(f"   ✓ {asset}", SUCCESS)
+                safe_progress(pct)
 
             # Step 4: Verify installation
-            self._log_step("Verificando instalação...", 85)
+            safe_log("\n▸ Verificando instalação...", ACCENT)
+            safe_progress(85)
+            
             critical = ['main.py', 'plugin.json']
             all_ok = True
             for f in critical:
                 if not os.path.exists(os.path.join(plugin_dir, f)):
-                    self._log(f"   ❌ {f} não foi copiado!", ERROR)
+                    safe_log(f"   ❌ {f} não foi copiado!", ERROR)
                     all_ok = False
 
             if not all_ok:
-                self._log("\n❌ A instalação pode estar incompleta.", ERROR)
-                self._set_buttons_safe(True)
+                safe_log("\n❌ A instalação pode estar incompleta.", ERROR)
+                self.after(0, lambda: self._set_buttons(True))
                 return
 
-            self._log("   Todos os ficheiros verificados. ✓", FG_DIM)
+            safe_log("   Todos os ficheiros verificados. ✓", FG_DIM)
 
             # Step 5: Restart Steam
-            self._log_step("Reiniciando Steam...", 95)
+            safe_log("\n▸ Reiniciando Steam...", ACCENT)
+            safe_progress(95)
+            
             steam_exe = os.path.join(steam_path, "steam.exe")
             if os.path.exists(steam_exe):
                 subprocess.Popen([steam_exe], start_new_session=True)
-                self._log("   Steam reiniciada.", FG_DIM)
+                safe_log("   Steam reiniciada.", FG_DIM)
 
             # Done!
-            self._update_progress(100)
-            self._log("")
-            self._log(f"🎉 {APP_NAME} {VERSION} instalado com sucesso!", SUCCESS)
-            self._log(f"   Local: {plugin_dir}", FG_DIM)
+            safe_progress(100)
+            safe_log("")
+            safe_log(f"🎉 {APP_NAME} {VERSION} instalado com sucesso!", SUCCESS)
+            safe_log(f"   Local: {plugin_dir}", FG_DIM)
 
-            # Change install button to close
             self.after(0, lambda: self._finish_ui())
 
         except Exception as e:
-            self._log(f"\n❌ Erro durante a instalação: {e}", ERROR)
-            self._set_buttons_safe(True)
-
-    def _log_step(self, msg, pct):
-        self._log(f"\n▸ {msg}", ACCENT)
-        self._update_progress(pct)
-
-    def _update_progress(self, pct):
-        self.after(0, lambda: self._set_progress(pct))
-
-    def _set_buttons_safe(self, enabled):
-        self.after(0, lambda: self._set_buttons(enabled))
+            self.after(0, lambda: self._log(f"\n❌ Erro durante a instalação: {e}", ERROR))
+            self.after(0, lambda: self._set_buttons(True))
 
     def _finish_ui(self):
         self.install_btn.config(text="✓  Concluído", bg=SUCCESS, state="disabled")
