@@ -128,9 +128,27 @@ class InstallerApp(tk.Tk):
 
     # ── Build ────────────────────────────────────────────────────
     def _build_ui(self):
+        # ── Bottom bar (Packed FIRST to ensure visibility) ────────
+        bottom = tk.Frame(self, bg=BG)
+        bottom.pack(side="bottom", fill="x", padx=32, pady=(20, 32))
+
+        self.install_btn = tk.Button(bottom, text="⬇  Instalar", font=("Segoe UI", 11, "bold"),
+                                     bg=ACCENT, fg="#fff", relief="flat", cursor="hand2",
+                                     activebackground=ACCENT_H, activeforeground="#fff",
+                                     highlightthickness=0, padx=32, pady=10,
+                                     command=self._start_install)
+        self.install_btn.pack(side="right")
+
+        self.cancel_btn = tk.Button(bottom, text="Cancelar", font=("Segoe UI", 10),
+                                    bg=BG_CARD, fg=FG_DIM, relief="flat", cursor="hand2",
+                                    activebackground=BG_INPUT, activeforeground=FG,
+                                    highlightthickness=0, padx=20, pady=9,
+                                    command=self.destroy)
+        self.cancel_btn.pack(side="right", padx=(0, 12))
+
         # ── Header ────────────────────────────────────────────────
         header = tk.Frame(self, bg=BG)
-        header.pack(fill="x", padx=32, pady=(32, 0))
+        header.pack(side="top", fill="x", padx=32, pady=(28, 0))
 
         tk.Label(header, text="💜", font=("Segoe UI Emoji", 32), bg=BG, fg=FG).pack(side="left")
         title_box = tk.Frame(header, bg=BG)
@@ -139,7 +157,7 @@ class InstallerApp(tk.Tk):
         tk.Label(title_box, text=f"Instalador {VERSION}", font=("Segoe UI", 11), bg=BG, fg=FG_DIM).pack(anchor="w")
 
         # ── Separator ─────────────────────────────────────────────
-        tk.Frame(self, height=1, bg=BORDER).pack(fill="x", padx=32, pady=(24, 24))
+        tk.Frame(self, height=1, bg=BORDER).pack(fill="x", padx=32, pady=(20, 20))
 
         # ── Path section ──────────────────────────────────────────
         path_frame = tk.Frame(self, bg=BG)
@@ -172,8 +190,22 @@ class InstallerApp(tk.Tk):
         self.hint_label.pack(anchor="w", pady=(6, 0))
         self.path_var.trace_add("write", self._on_path_change)
 
+        # ── Progress bar (Moved up) ──────────────────────────────
+        # Put progress bar below path section, before log
+        progress_frame = tk.Frame(self, bg=BG)
+        progress_frame.pack(fill="x", padx=32, pady=(16, 0))
+        
+        self.progress_var = tk.DoubleVar()
+        style = ttk.Style()
+        style.theme_use('default')
+        style.configure("Custom.Horizontal.TProgressbar", thickness=6, background=ACCENT, troughcolor=BORDER, borderwidth=0)
+        
+        self.progress = ttk.Progressbar(progress_frame, style="Custom.Horizontal.TProgressbar", 
+                                        variable=self.progress_var, maximum=100)
+        self.progress.pack(fill="x")
+
         # ── Log area ──────────────────────────────────────────────
-        tk.Frame(self, height=1, bg=BORDER).pack(fill="x", padx=32, pady=(20, 16))
+        tk.Frame(self, height=1, bg=BORDER).pack(fill="x", padx=32, pady=(16, 12))
         
         log_header = tk.Frame(self, bg=BG)
         log_header.pack(fill="x", padx=32)
@@ -181,7 +213,8 @@ class InstallerApp(tk.Tk):
 
         log_frame = tk.Frame(self, bg=BG_CARD, highlightthickness=1,
                              highlightbackground=BORDER, highlightcolor=BORDER)
-        log_frame.pack(fill="both", expand=True, padx=32, pady=(10, 0))
+        # Pack with expand=True to taking remaining space
+        log_frame.pack(fill="both", expand=True, padx=32, pady=(10, 20))
 
         self.log_text = tk.Text(log_frame, bg=BG_CARD, fg=FG_DIM, font=("Consolas", 9),
                                 relief="flat", state="disabled", wrap="word",
@@ -194,34 +227,6 @@ class InstallerApp(tk.Tk):
         self.log_text.tag_config("normal", foreground=FG)
 
         self._log("Pronto. Selecione a pasta da Steam e clique em Instalar.", FG_DIM)
-
-        # ── Progress bar ──────────────────────────────────────────
-        self.progress_var = tk.DoubleVar()
-        style = ttk.Style()
-        style.theme_use('default')
-        style.configure("Custom.Horizontal.TProgressbar", thickness=4, background=ACCENT, troughcolor=BORDER, borderwidth=0)
-        
-        self.progress = ttk.Progressbar(self, style="Custom.Horizontal.TProgressbar", 
-                                        variable=self.progress_var, maximum=100)
-        self.progress.pack(fill="x", padx=32, pady=(12, 0))
-
-        # ── Bottom bar ────────────────────────────────────────────
-        bottom = tk.Frame(self, bg=BG)
-        bottom.pack(fill="x", padx=32, pady=(20, 32))
-
-        self.install_btn = tk.Button(bottom, text="⬇  Instalar", font=("Segoe UI", 11, "bold"),
-                                     bg=ACCENT, fg="#fff", relief="flat", cursor="hand2",
-                                     activebackground=ACCENT_H, activeforeground="#fff",
-                                     highlightthickness=0, padx=32, pady=10,
-                                     command=self._start_install)
-        self.install_btn.pack(side="right")
-
-        self.cancel_btn = tk.Button(bottom, text="Cancelar", font=("Segoe UI", 10),
-                                    bg=BG_CARD, fg=FG_DIM, relief="flat", cursor="hand2",
-                                    activebackground=BG_INPUT, activeforeground=FG,
-                                    highlightthickness=0, padx=20, pady=9,
-                                    command=self.destroy)
-        self.cancel_btn.pack(side="right", padx=(0, 12))
 
     # ── Helpers ──────────────────────────────────────────────────
     def _browse(self):
