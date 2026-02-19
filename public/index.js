@@ -685,28 +685,6 @@
             } catch (e) { container.innerHTML = `<div style="padding:20px; text-align:center; color:#ef4444">${t('connectionError')} ${e}</div>`; }
         }
 
-        async function triggerBackup(btn) {
-            btn.disabled = true;
-            btn.innerHTML = `⏳ ${t('backingUp')}`;
-            try {
-                const res = await fetch(`${API_URL}/backups/create`, { method: 'POST' });
-                const data = await res.json();
-                if (data.status === 'success') {
-                    // Refresh list
-                    const overlay = document.querySelector('.caly-overlay');
-                    if (overlay) {
-                        fetchBackups(overlay.querySelector('#caly-list-container'), overlay.querySelector('#caly-usage'));
-                    }
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (e) { alert(t('connectionError') + e); }
-            finally {
-                btn.disabled = false;
-                btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> ${t('backupNow')}`;
-            }
-        }
-
         async function triggerPin(folder, newPinnedStatus, btn) {
             try {
                 // Optimistic UI update
